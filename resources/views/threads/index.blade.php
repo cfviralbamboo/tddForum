@@ -8,12 +8,12 @@
                 <div class="card-header">Forum Threads</div>
 
                 <div class="card-body">
-                    @foreach (threads as $thread)
+                    @foreach ($threads as $thread)
                         <article>
                             <h4>{{ $thread->title }}</h4>
                             <div>{{ $thread->body }}</div>
                         </article>
-
+                        <hr>
                     @endforeach
                 </div>
             </div>
