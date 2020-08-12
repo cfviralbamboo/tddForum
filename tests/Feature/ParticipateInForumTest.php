@@ -11,29 +11,45 @@ class ParticipateInForumTest extends TestCase
 
     function test_unauthenticated_user_may_not_add_replies()
     {
-        $this->expectException('Illuminate\Auth\AuthenticationException');
-
-        $thread = factory('App\Thread')->create();
-
-        $this->post('/threads/1/replies', []);
+        $this->withExceptionHandling()
+            ->post('/threads/some-channel/1/replies', [])
+            ->assertRedirect('/login');
     }
 
     /** @test */
     function test_an_authenticated_user_can_participate_in_forum_threads()
     {
         // given authenticated user
-        $this->be($user = factory('App\User')->create());
+        $this->signIn();
 
         // and existing thread
-        $thread = factory('App\Thread')->create();
+        $thread = create('App\Thread');
 
         // when user addd reply to thread
         // simulates post and sending to server
-        $reply = factory('App\Reply')->make();
+        $reply = make('App\Reply');
+
         $this->post($thread->path().'/replies', $reply->toArray());
 
         // then their reply should be visible on page
         $this->get($thread->path())
             ->assertSee($reply->body);
+    }
+
+    /** @test */
+    function test_a_reply_requires_a_body()
+    {
+        // given signed in
+        $this->withExceptionHandling()->signIn();
+
+        // given we have a thread
+        $thread = create('App\Thread');
+
+        // given we have a reply wher body is null
+        $reply = make('App\Reply', ['body' => null]);
+
+        // when wemake a post we assert that there errors
+        $this->post($thread->path().'/replies', $reply->toArray())
+            ->assertSessionHasErrors('body');
     }
  }
