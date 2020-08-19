@@ -18,6 +18,22 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        body {
+            padding-bottom: 100px;
+        }
+        .level {
+            display: flex;
+            align-items: center;
+        }
+        .flex {
+            flex: 1;
+        }
+
+        /* .boldMe {
+            font-weight: bold;
+        } */
+    </style>
 </head>
 <body style="padding-bottom: 100px;">
     <div id="app">
