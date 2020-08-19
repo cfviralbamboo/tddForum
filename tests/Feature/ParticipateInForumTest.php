@@ -48,7 +48,8 @@ class ParticipateInForumTest extends TestCase
         // given we have a reply wher body is null
         $reply = make('App\Reply', ['body' => null]);
 
-        // when wemake a post we assert that there errors
+        // when we post a reply without body we assert that
+        // there are errors
         $this->post($thread->path().'/replies', $reply->toArray())
             ->assertSessionHasErrors('body');
     }

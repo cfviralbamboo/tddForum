@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
+use function GuzzleHttp\Promise\all;
+
 class ReadThreadsTest extends TestCase
 {
 
@@ -63,5 +65,22 @@ class ReadThreadsTest extends TestCase
         $this->get('/threads/' . $channel->slug)
             ->assertSee($threadInChannel->title)
             ->assertDontSee($threadNotInChannel->title);
+    }
+
+    /** @test */
+    function user_can_filter_threads_by_any_username()
+    {
+        //given signed in
+        $this->signIn(create('App\User', ['name' => 'JohnDoe']));
+
+        //user creates thread
+        $threadByJohn = create('App\Thread', ['user_id' => auth()->id()]);
+
+        // thread not created by another user
+        $threadNotByJohn = create('App\Thread');
+
+        $this->get('threads?by=JohnDoe')
+            ->assertSee($threadByJohn->title)
+            ->assertDontSee($threadNotByJohn->title);
     }
 }

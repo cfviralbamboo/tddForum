@@ -33,17 +33,34 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/threads">All Threads</a>
+                        <li class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Browse <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="/threads">All Threads</a>
+                                </li>
+                                <li>
+                                    @if(auth()->check())
+                                        <a class="dropdown-item" href="/threads?by={{ auth()->user()->name }}">My Threads</a>
+                                    @endif
+                                </li>
+                            </ul>
                         </li>
-                        <div class="dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Channels</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                 @foreach (App\Channel::all() as $channel)
-                                      <a class="dropdown-item" href="/threads/{{ $channel->slug }}">{{ $channel->name }}</a>
-                                 @endforeach
-                            </div>
-                       </div>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/threads/create">New Thread</a>
+                        </li>
+
+                        <li class="dropdown">
+                            <div class="dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Channels <span class="caret"></span></a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                     @foreach ($channels as $channel)
+                                          <a class="dropdown-item" href="/threads/{{ $channel->slug }}">{{ $channel->name }}</a>
+                                     @endforeach
+                                </div>
+                           </div>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->

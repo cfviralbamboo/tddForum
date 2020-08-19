@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Channel;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -14,7 +16,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+
+        \view()->composer('*', function($view) {
+            $view->with('channels', Channel::all());
+        });
     }
 
     /**
