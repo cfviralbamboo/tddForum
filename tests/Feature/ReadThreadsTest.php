@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Reply;
+use App\Thread;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
@@ -82,5 +84,31 @@ class ReadThreadsTest extends TestCase
         $this->get('threads?by=JohnDoe')
             ->assertSee($threadByJohn->title)
             ->assertDontSee($threadNotByJohn->title);
+    }
+
+    /** @test */
+    function userCanfilterThreadsByPopularity()
+    {
+        // given we have threads
+        // with 4 replies, 3 replies, 2, 1, and 0 replies, respectively
+        $threadWithFourReplies = create(Thread::class);
+        create(Reply::class, ['thread_id' => $threadWithFourReplies->id], 4);
+
+        $threadWithThreeReplies = create(Thread::class);
+        create(Reply::class, ['thread_id' => $threadWithThreeReplies->id], 3);
+
+        $threadWithTwoReplies = create(Thread::class);
+        create(Reply::class, ['thread_id' => $threadWithTwoReplies->id], 2);
+
+        $threadWithOneReplies = create(Thread::class);
+        create(Reply::class, ['thread_id' => $threadWithOneReplies->id], 1);
+
+        $threadWithNoReplies = $this->thread;
+
+        // when i filter all thread by popoularity
+        $response = $this->getJson('threads?popular=1')->json();
+
+        //the should be returned from most replies to least
+        $this->assertEquals([4, 3, 2, 1, 0], array_column($response, 'replies_count'));
     }
 }
